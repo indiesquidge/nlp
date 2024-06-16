@@ -3,16 +3,16 @@ import "./App.css";
 import { practiceRandomNote } from "./guitar-utils";
 
 const colorClasses = [
-  "bg-red-900/100",
-  "bg-red-900/90",
-  "bg-red-900/80",
-  "bg-red-900/70",
-  "bg-red-900/60",
-  "bg-red-900/50",
-  "bg-red-900/40",
-  "bg-red-900/30",
-  "bg-red-900/20",
-  "bg-red-900/10",
+  ["bg-red-900", "text-white"],
+  ["bg-red-800", "text-white"],
+  ["bg-red-700", "text-white"],
+  ["bg-red-600", "text-white"],
+  ["bg-red-500", "text-white"],
+  ["bg-red-400", "text-black"],
+  ["bg-red-300", "text-black"],
+  ["bg-red-200", "text-black"],
+  ["bg-red-100", "text-black"],
+  ["bg-red-50", "text-black"],
 ];
 
 function App() {
@@ -27,20 +27,20 @@ function App() {
   const [note, setNote] = React.useState<string | null>(null);
 
   const getColorFromDelay = (countdown?: number) => {
-    if (countdown == null) return "bg-transparent";
-    if (countdown === 0) return "bg-blue-600/50";
-    return colorClasses[countdown - 1];
+    if (countdown === undefined) return "bg-transparent";
+    if (countdown === 0) return ["bg-vivid-cyan-blue", "text-white"].join(" ");
+    return colorClasses[countdown - 1].join(" ");
   };
 
   const onChangeDelay = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(event.target.value);
-    const delay = Math.max(1, Math.min(9, value));
-    setDelayValue(delay);
+    setDelayValue(event.target.valueAsNumber);
   };
 
   const onClick = () => {
-    setNote(null);
+    setDelayValue(Math.max(1, Math.min(9, delayValue)));
     setCountdown(delayValue);
+    setNote(null);
+
     const updateStates = practiceRandomNote({ delay: delayValue * 1000 });
     updateStates(setStringAndFret, setNote);
   };
@@ -95,7 +95,9 @@ function App() {
             </div>
             {(countdown || note) && (
               <div
-                className={`text-white w-full lg:w-fit text-center min-h-6 p-6 rounded ${getColorFromDelay(countdown)}`}
+                className={`w-full lg:w-fit text-center min-h-6 p-6 rounded
+                  ${getColorFromDelay(countdown)}
+                  ${countdown && "transition-colors duration-500"}`}
               >
                 {countdown ? `Time remaining: ${countdown}` : note}
               </div>
