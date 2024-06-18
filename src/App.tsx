@@ -15,8 +15,12 @@ const colorClasses = [
   ["bg-red-50", "text-black"],
 ];
 
+const allFretsCount = Array.from({ length: 23 }, (_, i) => i); // [0, 1, 2, ..., 22]
+
 function App() {
   const [delayValue, setDelayValue] = React.useState(5);
+  const [selectedFrets, setSelectedFrets] =
+    React.useState<number[]>(allFretsCount);
   const [countdown, setCountdown] = React.useState<number | undefined>(
     undefined,
   );
@@ -41,8 +45,31 @@ function App() {
     setCountdown(delayValue);
     setNote(null);
 
-    const updateStates = practiceRandomNote({ delay: delayValue * 1000 });
+    const updateStates = practiceRandomNote({
+      delay: delayValue * 1000,
+      fretOptions: selectedFrets,
+    });
+
     updateStates(setStringAndFret, setNote);
+  };
+
+  const selectFret = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fret = parseInt(event.target.id.replace("fret-", ""));
+    if (event.target.checked) {
+      setSelectedFrets((prevSelectedFrets) => [...prevSelectedFrets, fret]);
+    } else {
+      setSelectedFrets((prevSelectedFrets) =>
+        prevSelectedFrets.filter((f) => f !== fret),
+      );
+    }
+  };
+
+  const selectAllFrets = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      setSelectedFrets(allFretsCount);
+    } else {
+      setSelectedFrets([]);
+    }
   };
 
   React.useEffect(() => {
@@ -67,17 +94,56 @@ function App() {
     <div className="lg:grid grid-cols-2 text-start text-2xl">
       <div className="border-b lg:border-b-0 lg:border-r border-gray-300 lg:pr-8">
         <h1 className="text-bronze mb-4 text-4xl">Name the note</h1>
+        <div className="bg-teal-50 dark:bg-teal-950 p-3 rounded mb-8 text-base">
+          <div className="mb-4">
+            <div className="flex mb-2">
+              <span className="mr-2">Frets: </span>
+              <label htmlFor="all-frets" className="flex items-center">
+                <input
+                  id="all-frets"
+                  type="checkbox"
+                  className="mr-1 ml-auto"
+                  checked={selectedFrets.length === allFretsCount.length}
+                  onChange={selectAllFrets}
+                />
+                <span>select all</span>
+              </label>
+            </div>
+            <div className="grid grid-cols-12 lg:grid-cols-8">
+              {allFretsCount.map((fret) => {
+                return (
+                  <label key={fret} htmlFor={`fret-${fret}`} className="mx-1">
+                    <input
+                      id={`fret-${fret}`}
+                      type="checkbox"
+                      className="mr-1"
+                      checked={selectedFrets.includes(fret)}
+                      onChange={selectFret}
+                    />
+                    {fret}
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+          <label htmlFor="delay-value">
+            Delay:{" "}
+            <input
+              id="delay-value"
+              className="w-9 border rounded mx-1"
+              type="number"
+              min="1"
+              max="9"
+              value={delayValue}
+              onChange={onChangeDelay}
+            />{" "}
+            seconds
+          </label>
+        </div>
         <div className="mb-4">
-          Name a note at any random location on the fretboard within{" "}
-          <input
-            className="w-9 border rounded mx-1"
-            type="number"
-            min="1"
-            max="9"
-            value={delayValue}
-            onChange={onChangeDelay}
-          />{" "}
-          seconds.
+          Identify a note on any of the{" "}
+          <b className="text-teal-500">{selectedFrets.length}</b> selected frets
+          within <b className="text-teal-500">{delayValue}</b> seconds.
         </div>
         <button className="w-full lg:w-1/3 block mb-10" onClick={onClick}>
           Start
