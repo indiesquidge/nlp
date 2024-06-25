@@ -72,7 +72,30 @@ function findAllFrets(note: string, string: GuitarString) {
   return frets;
 }
 
-function getNotes(): string[] {
+export function getChordTriad(
+  chordRoot: string,
+  chordType: ChordType,
+): [string, string, string] {
+  const notes = getNotes();
+  const noteIndex = findChordRootIndex(chordRoot);
+
+  const majorThirdIndex = (noteIndex + 4) % notes.length;
+  const minorThirdIndex = (noteIndex + 3) % notes.length;
+  const perfectFifthIndex = (noteIndex + 7) % notes.length;
+
+  const thirdIndex =
+    chordType === ChordType.Minor ? minorThirdIndex : majorThirdIndex;
+
+  const triad: [string, string, string] = [
+    chordRoot, // Root
+    simplifyNote(notes[thirdIndex]), // Third (Major or Minor)
+    simplifyNote(notes[perfectFifthIndex]), // Perfect Fifth
+  ];
+
+  return triad;
+}
+
+export function getNotes(): string[] {
   return [
     "C",
     "C#/D♭",
@@ -91,6 +114,31 @@ function getNotes(): string[] {
 
 function getNaturalNotes(): string[] {
   return ["C", "D", "E", "F", "G", "A", "B"];
+}
+
+export function getSortedNotes(): string[] {
+  const notes = getNotes();
+  const naturalNotes = notes.filter((note) => !note.includes("#"));
+  const sharpFlatNotes = notes.filter((note) => note.includes("#"));
+  return [...naturalNotes, ...sharpFlatNotes];
+}
+
+function findChordRootIndex(chordRoot: string) {
+  const notes = getNotes();
+  const noteIndex = notes.findIndex((note) => {
+    const [sharp, flat] = note.split("/");
+    return sharp === chordRoot || flat === chordRoot;
+  });
+
+  if (noteIndex === -1) {
+    throw new Error("Invalid chord root");
+  }
+
+  return noteIndex;
+}
+
+function simplifyNote(note: string) {
+  return note.split("/")[0];
 }
 
 const defaultOptions: Options = {
@@ -122,3 +170,8 @@ const openStringNotes: Record<GuitarString, string> = {
   [GuitarString.B]: "B",
   [GuitarString.e]: "E", // High E string has the same open note as low E string.
 };
+
+export enum ChordType {
+  Major = "major",
+  Minor = "minor",
+}
