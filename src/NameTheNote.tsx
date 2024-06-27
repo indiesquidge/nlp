@@ -1,18 +1,6 @@
 import React from "react";
 import { practiceRandomNote } from "./guitar-utils";
-
-const colorClasses = [
-  ["bg-red-900", "text-white"],
-  ["bg-red-800", "text-white"],
-  ["bg-red-700", "text-white"],
-  ["bg-red-600", "text-white"],
-  ["bg-red-500", "text-white"],
-  ["bg-red-400", "text-black"],
-  ["bg-red-300", "text-black"],
-  ["bg-red-200", "text-black"],
-  ["bg-red-100", "text-black"],
-  ["bg-red-50", "text-black"],
-];
+import { getColorFromDelay } from "./utils";
 
 const allFretsCount = Array.from({ length: 18 }, (_, i) => i); // [0, 1, 2, ..., 17]
 
@@ -28,12 +16,6 @@ export default function NameTheNote() {
     fret: number;
   } | null>(null);
   const [note, setNote] = React.useState<string | null>(null);
-
-  const getColorFromDelay = (countdown?: number) => {
-    if (countdown === undefined) return "bg-transparent";
-    if (countdown === 0) return ["bg-vivid-cyan-blue", "text-white"].join(" ");
-    return colorClasses[countdown - 1].join(" ");
-  };
 
   const onChangeDelay = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDelayValue(event.target.valueAsNumber);

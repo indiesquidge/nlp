@@ -1,19 +1,7 @@
 import React from "react";
 import { nameTriadNotes } from "./guitar-utils";
 import type { ChordType } from "./guitar-utils";
-
-const colorClasses = [
-  ["bg-red-900", "text-white"],
-  ["bg-red-800", "text-white"],
-  ["bg-red-700", "text-white"],
-  ["bg-red-600", "text-white"],
-  ["bg-red-500", "text-white"],
-  ["bg-red-400", "text-black"],
-  ["bg-red-300", "text-black"],
-  ["bg-red-200", "text-black"],
-  ["bg-red-100", "text-black"],
-  ["bg-red-50", "text-black"],
-];
+import { getColorFromDelay } from "./utils";
 
 export default function NameTriadNotes() {
   const [delayValue, setDelayValue] = React.useState(5);
@@ -28,12 +16,6 @@ export default function NameTriadNotes() {
   const [triadNotes, setTriadNotes] = React.useState<
     [string, string, string] | null
   >(null);
-
-  const getColorFromDelay = (countdown?: number) => {
-    if (countdown === undefined) return "bg-transparent";
-    if (countdown === 0) return ["bg-vivid-cyan-blue", "text-white"].join(" ");
-    return colorClasses[countdown - 1].join(" ");
-  };
 
   const onStart = () => {
     setDelayValue(Math.max(1, Math.min(9, delayValue)));
