@@ -53,6 +53,30 @@ export function practiceFindingNote(
   };
 }
 
+export function nameTriadNotes(
+  options?: Options,
+): (
+  setTarget: (value: { rootNote: string; chordType: ChordType }) => void,
+  setTriad: (value: [string, string, string]) => void,
+) => void {
+  const { delay, naturalOnly } = options ?? defaultOptions;
+  const chordTypes = Object.values(ChordType);
+  const notes = naturalOnly ? getNaturalNotes() : getNotes();
+
+  const rootNote = simplifyNote(
+    notes[Math.floor(Math.random() * notes.length)],
+  );
+  const chordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
+  const triad = getChordTriad(rootNote, chordType);
+
+  return (setTarget, setTriad) => {
+    setTarget({ rootNote, chordType });
+    setTimeout(() => {
+      setTriad(triad);
+    }, delay);
+  };
+}
+
 // Helper function to find all frets for a note on a string
 function findAllFrets(note: string, string: GuitarString) {
   const notes = getNotes();

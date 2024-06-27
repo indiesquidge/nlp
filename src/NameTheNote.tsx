@@ -151,7 +151,7 @@ export default function NameTheNote() {
             Start
           </button>
         </div>
-        <div className="text-3xl flex flex-col lg:items-center mt-10">
+        <div className="text-3xl flex flex-col lg:items-center lg:pl-8 mt-10">
           {stringAndFret && (
             <>
               <div className="mb-4 text-pretty">

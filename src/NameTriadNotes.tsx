@@ -1,5 +1,6 @@
 import React from "react";
-import { practiceFindingNote } from "./guitar-utils";
+import { nameTriadNotes } from "./guitar-utils";
+import type { ChordType } from "./guitar-utils";
 
 const colorClasses = [
   ["bg-red-900", "text-white"],
@@ -14,17 +15,19 @@ const colorClasses = [
   ["bg-red-50", "text-black"],
 ];
 
-export default function FindTheNote() {
+export default function NameTriadNotes() {
   const [delayValue, setDelayValue] = React.useState(5);
-  const [onlyNaturalNotes, setOnlyNaturalNotes] = React.useState(false);
+  const [onlyNaturalNotes, setOnlyNaturalNotes] = React.useState(true);
   const [countdown, setCountdown] = React.useState<number | undefined>(
     undefined,
   );
-  const [stringAndNote, setStringAndNote] = React.useState<{
-    string: string;
-    note: string;
+  const [rootNoteAndChordType, setRootNoteAndChordType] = React.useState<{
+    rootNote: string;
+    chordType: ChordType;
   } | null>(null);
-  const [frets, setFrets] = React.useState<number[] | null>(null);
+  const [triadNotes, setTriadNotes] = React.useState<
+    [string, string, string] | null
+  >(null);
 
   const getColorFromDelay = (countdown?: number) => {
     if (countdown === undefined) return "bg-transparent";
@@ -36,21 +39,21 @@ export default function FindTheNote() {
     setDelayValue(Math.max(1, Math.min(9, delayValue)));
     setCountdown(delayValue);
 
-    const updateStates = practiceFindingNote({
+    const updateStates = nameTriadNotes({
       delay: delayValue * 1000,
       naturalOnly: onlyNaturalNotes,
     });
 
-    setFrets(null);
-    updateStates(setStringAndNote, setFrets);
-  };
-
-  const onChangeOnlyNaturalNotes = () => {
-    setOnlyNaturalNotes((prevOnlyNaturalNotes) => !prevOnlyNaturalNotes);
+    setTriadNotes(null);
+    updateStates(setRootNoteAndChordType, setTriadNotes);
   };
 
   const onChangeDelay = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDelayValue(event.target.valueAsNumber);
+  };
+
+  const onChangeOnlyNaturalNotes = () => {
+    setOnlyNaturalNotes((prevOnlyNaturalNotes) => !prevOnlyNaturalNotes);
   };
 
   React.useEffect(() => {
@@ -74,7 +77,7 @@ export default function FindTheNote() {
   return (
     <div>
       <h1 className="text-bronze text-left lg:text-center mb-4 text-4xl">
-        Find the note
+        Name the triad notes
       </h1>
       <div className="lg:grid grid-cols-2 text-start text-2xl">
         <div className="lg:border-r border-gray-300 lg:pr-8">
@@ -104,21 +107,23 @@ export default function FindTheNote() {
             </label>
           </div>
           <div className="mb-4 text-pretty">
-            Find the given note on a particular string
+            Find the triad notes for the given chord
           </div>
           <button className="w-full lg:w-1/3 block mb-10" onClick={onStart}>
             Start
           </button>
         </div>
         <div className="text-3xl flex flex-col lg:items-center lg:pl-8 mt-10">
-          {stringAndNote && (
+          {rootNoteAndChordType && (
             <>
               <div className="mb-4 text-pretty">
-                Find the note{" "}
-                <b className="text-bronze">{stringAndNote?.note}</b> on string{" "}
-                <b className="text-bronze">{stringAndNote?.string}</b>{" "}
+                What are the triad notes in the{" "}
+                <b className="text-bronze text-nowrap">
+                  {`${rootNoteAndChordType.rootNote} ${rootNoteAndChordType.chordType}`}
+                </b>{" "}
+                chord?
               </div>
-              {(countdown || frets) && (
+              {(countdown || triadNotes) && (
                 <div
                   className={`w-full lg:w-fit text-center min-h-6 p-6 rounded
                   ${getColorFromDelay(countdown)}
@@ -126,7 +131,7 @@ export default function FindTheNote() {
                 >
                   {countdown
                     ? `Time remaining: ${countdown}`
-                    : `Frets: ${frets?.join(", ")}`}
+                    : triadNotes?.join(", ")}
                 </div>
               )}
             </>

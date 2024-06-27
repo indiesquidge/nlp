@@ -83,7 +83,7 @@ export default function GetTriadNotes() {
           </button>
         </div>
         {triadNotes && (
-          <div className="text-3xl flex flex-col lg:items-center mt-10">
+          <div className="text-3xl flex flex-col lg:items-center lg:pl-8 mt-10">
             <div className="w-full lg:w-fit text-center min-h-6 p-6 rounded bg-vivid-cyan-blue text-white">
               {triadNotes.join(", ")}
             </div>
