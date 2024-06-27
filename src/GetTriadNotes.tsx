@@ -1,7 +1,7 @@
 import React from "react";
 import { getSortedNotes, getChordTriad, ChordType } from "./guitar-utils";
 
-export default function GetTriadNoets() {
+export default function GetTriadNotes() {
   const sortedNotes = getSortedNotes();
   const [triadNotes, setTriadNotes] = React.useState<
     [string, string, string] | null
