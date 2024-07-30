@@ -77,7 +77,6 @@ export function nameTriadNotes(
   };
 }
 
-// Helper function to find all frets for a note on a string
 function findAllFrets(note: string, string: GuitarString) {
   const notes = getNotes();
   const noteIndex = notes.indexOf(note);
@@ -94,6 +93,67 @@ function findAllFrets(note: string, string: GuitarString) {
   }
 
   return frets;
+}
+
+export function getNotesAndChordsForKey(
+  chordRoot: string,
+  chordType: ChordType,
+): NoteInfo[] {
+  const notes = getNotes();
+  const noteIndex = findChordRootIndex(chordRoot);
+  const scalePattern = getScalePattern(chordType);
+
+  const degreeNamesMajor = [
+    "tonic",
+    "supertonic",
+    "mediant",
+    "subdominant",
+    "dominant",
+    "submediant or relative minor",
+    "leading tone",
+  ];
+  const degreeNamesMinor = [
+    "tonic",
+    "supertonic",
+    "mediant",
+    "subdominant",
+    "dominant",
+    "submediant",
+    "subtonic",
+  ];
+
+  const degrees =
+    chordType === ChordType.Major
+      ? ["I", "ii", "iii", "IV", "V", "vi", "vii°"]
+      : ["i", "ii°", "III", "iv", "v", "VI", "VII"];
+  const degreeNames =
+    chordType === ChordType.Major ? degreeNamesMajor : degreeNamesMinor;
+
+  const chordTypeOrder = getChordTypesOrder(chordType);
+
+  const scaleNotes: NoteInfo[] = [];
+  let currentIndex = noteIndex;
+
+  degrees.forEach((degree, i) => {
+    if (i === 0) {
+      scaleNotes.push({
+        note: simplifyNote(notes[currentIndex]),
+        degree: degree,
+        degreeName: degreeNames[i],
+        chordType: chordTypeOrder[i],
+      });
+    } else {
+      currentIndex = (currentIndex + scalePattern[i - 1]) % notes.length;
+      scaleNotes.push({
+        note: simplifyNote(notes[currentIndex]),
+        degree: degrees[i],
+        degreeName: degreeNames[i],
+        chordType: chordTypeOrder[i],
+      });
+    }
+  });
+
+  return scaleNotes;
 }
 
 export function getChordTriad(
@@ -136,6 +196,30 @@ export function getNotes(): string[] {
   ];
 }
 
+function getChordTypesOrder(chordType: ChordType): ChordType[] {
+  if (chordType === ChordType.Major) {
+    return [
+      ChordType.Major,
+      ChordType.Minor,
+      ChordType.Minor,
+      ChordType.Major,
+      ChordType.Major,
+      ChordType.Minor,
+      ChordType.Diminished,
+    ];
+  }
+
+  return [
+    ChordType.Minor,
+    ChordType.Diminished,
+    ChordType.Major,
+    ChordType.Minor,
+    ChordType.Minor,
+    ChordType.Major,
+    ChordType.Major,
+  ];
+}
+
 function getNaturalNotes(): string[] {
   return ["C", "D", "E", "F", "G", "A", "B"];
 }
@@ -165,11 +249,29 @@ function simplifyNote(note: string) {
   return note.split("/")[0];
 }
 
+function getScalePattern(chordType: ChordType): number[] {
+  switch (chordType) {
+    case ChordType.Major:
+      return [2, 2, 1, 2, 2, 2, 1]; // W, W, H, W, W, W, H
+    case ChordType.Minor:
+      return [2, 1, 2, 2, 1, 2, 2]; // W, H, W, W, H, W, W
+    default:
+      throw new Error("Invalid chord type");
+  }
+}
+
 const defaultOptions: Options = {
   fretOptions: null,
   delay: 5000,
   naturalOnly: false,
 };
+
+export interface NoteInfo {
+  note: string;
+  degree: string;
+  degreeName: string;
+  chordType: ChordType;
+}
 
 type Options = {
   fretOptions?: number[] | null;
@@ -198,4 +300,5 @@ const openStringNotes: Record<GuitarString, string> = {
 export enum ChordType {
   Major = "major",
   Minor = "minor",
+  Diminished = "diminished",
 }
