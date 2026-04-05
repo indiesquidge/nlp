@@ -16,8 +16,13 @@ export default function NameTriadNotes() {
   const [triadNotes, setTriadNotes] = React.useState<
     [string, string, string] | null
   >(null);
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
 
   const onStart = () => {
+    clearTimeout(timeoutRef.current);
+
     setDelayValue(Math.max(1, Math.min(9, delayValue)));
     setCountdown(delayValue);
 
@@ -27,7 +32,8 @@ export default function NameTriadNotes() {
     });
 
     setTriadNotes(null);
-    updateStates(setRootNoteAndChordType, setTriadNotes);
+
+    timeoutRef.current = updateStates(setRootNoteAndChordType, setTriadNotes);
   };
 
   const onChangeDelay = (event: React.ChangeEvent<HTMLInputElement>) => {

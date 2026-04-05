@@ -13,8 +13,13 @@ export default function FindTheNote() {
     note: string;
   } | null>(null);
   const [frets, setFrets] = React.useState<number[] | null>(null);
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
 
   const onStart = () => {
+    clearTimeout(timeoutRef.current);
+
     setDelayValue(Math.max(1, Math.min(9, delayValue)));
     setCountdown(delayValue);
 
@@ -24,7 +29,8 @@ export default function FindTheNote() {
     });
 
     setFrets(null);
-    updateStates(setStringAndNote, setFrets);
+
+    timeoutRef.current = updateStates(setStringAndNote, setFrets);
   };
 
   const onChangeOnlyNaturalNotes = () => {

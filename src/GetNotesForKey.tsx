@@ -43,7 +43,7 @@ export default function GetNotesForKey() {
                 onChange={(e) => setSelectedNote(e.target.value)}
               >
                 {sortedNotes.map((note) => (
-                  <option key={note} value={note}>
+                  <option key={note} value={note.split("/")[0]}>
                     {note}
                   </option>
                 ))}
@@ -81,15 +81,16 @@ export default function GetNotesForKey() {
             </fieldset>
           </div>
           <div className="mb-4 text-pretty">
-            Given a major or minor chord, give the triad notes.
+            Given a key and scale type, give the notes and chords for each
+            degree.
           </div>
-          <button className="w-full lg:w-1/3 block mb-10" onClick={getNotes}>
+          <button className="w-full lg:w-1/2 block mb-10" onClick={getNotes}>
             Get notes
           </button>
         </div>
         {keyNotesAndChords && (
-          <table className="w-full md:mx-8 divide-y divide-gray-200 border border-gray-200">
-            <thead className="bg-gray-50">
+          <table className="w-full md:mx-8 divide-y divide-gray-200 dark:divide-gray-700 border border-gray-200 dark:border-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
                 <th className="p-3 text-left text-xs font-medium text-vivid-red uppercase tracking-wider">
                   Note
@@ -105,7 +106,7 @@ export default function GetNotesForKey() {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
               {keyNotesAndChords.map(
                 ({ note, degree, chordType, degreeName }) => (
                   <tr key={note}>

@@ -76,7 +76,7 @@ export default function GetTriadNotes() {
             Given a major or minor chord, give the triad notes.
           </div>
           <button
-            className="w-full lg:w-1/3 block mb-10"
+            className="w-full lg:w-1/2 block mb-10"
             onClick={getNotesForTriad}
           >
             Get notes

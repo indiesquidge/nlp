@@ -16,12 +16,17 @@ export default function NameTheNote() {
     fret: number;
   } | null>(null);
   const [note, setNote] = React.useState<string | null>(null);
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
 
   const onChangeDelay = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDelayValue(event.target.valueAsNumber);
   };
 
   const onStart = () => {
+    clearTimeout(timeoutRef.current);
+
     setDelayValue(Math.max(1, Math.min(9, delayValue)));
     setCountdown(delayValue);
 
@@ -31,7 +36,8 @@ export default function NameTheNote() {
     });
 
     setNote(null);
-    updateStates(setStringAndFret, setNote);
+
+    timeoutRef.current = updateStates(setStringAndFret, setNote);
   };
 
   const selectFret = (event: React.ChangeEvent<HTMLInputElement>) => {

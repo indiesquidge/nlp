@@ -1,5 +1,6 @@
 import FindTheNote from "./FindTheNote";
 import GetNotesForKey from "./GetNotesForKey";
+import GetSeventhChordNotes from "./GetSeventhChordNotes";
 import GetTriadNotes from "./GetTriadNotes";
 import NameTheNote from "./NameTheNote";
 import NameTriadNotes from "./NameTriadNotes";
@@ -13,6 +14,7 @@ export enum PracticeComponentNames {
 export enum HelperComponentNames {
   GetNotesForKey = "Get notes for key",
   GetTriadNotes = "Get triad notes",
+  GetSeventhChordNotes = "Get seventh chord notes",
 }
 
 export const PRACTICE_COMPONENTS = {
@@ -24,6 +26,7 @@ export const PRACTICE_COMPONENTS = {
 export const HELPER_COMPONENTS = {
   [HelperComponentNames.GetNotesForKey]: GetNotesForKey,
   [HelperComponentNames.GetTriadNotes]: GetTriadNotes,
+  [HelperComponentNames.GetSeventhChordNotes]: GetSeventhChordNotes,
 };
 
 export const ALL_LEARNING_COMPONENTS = {

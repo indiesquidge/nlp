@@ -36,6 +36,7 @@ export default function SelectionPane({
           {Object.values(PracticeComponentNames).map((name) => {
             return (
               <button
+                key={name}
                 className="w-full my-2 border-black"
                 onClick={() => {
                   setCurrentPractice(name);
@@ -52,6 +53,7 @@ export default function SelectionPane({
           {Object.values(HelperComponentNames).map((name) => {
             return (
               <button
+                key={name}
                 className="w-full my-2 border-black"
                 onClick={() => {
                   setCurrentPractice(name);
