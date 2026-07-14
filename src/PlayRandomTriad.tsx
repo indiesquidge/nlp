@@ -30,10 +30,21 @@ function getRandomStringSet(): [string, string, string] {
   return [...getRandomItem(STRING_SETS)] as [string, string, string];
 }
 
-function getRandomTriadPrompt(): TriadPrompt {
+function getRandomTriadPrompt(
+  onlyNaturalNotes: boolean,
+  includeMajor: boolean,
+  includeMinor: boolean,
+): TriadPrompt {
   const sortedNotes = getSortedNotes();
-  const rootNote = getRandomItem(sortedNotes).split("/")[0];
-  const chordType = getRandomItem([ChordType.Major, ChordType.Minor]);
+  const availableNotes = onlyNaturalNotes
+    ? sortedNotes.filter((note) => !note.includes("#") && !note.includes("♭"))
+    : sortedNotes;
+  const rootNote = getRandomItem(availableNotes).split("/")[0];
+  const availableChordTypes = [
+    ...(includeMajor ? [ChordType.Major] : []),
+    ...(includeMinor ? [ChordType.Minor] : []),
+  ];
+  const chordType = getRandomItem(availableChordTypes);
   const inversion = Math.floor(Math.random() * 3);
   const triadNotes = getChordTriad(rootNote, chordType);
 
@@ -55,9 +66,24 @@ function getRandomTriadPrompt(): TriadPrompt {
 
 export default function PlayRandomTriad() {
   const [prompt, setPrompt] = React.useState<TriadPrompt | null>(null);
+  const [onlyNaturalNotes, setOnlyNaturalNotes] = React.useState(false);
+  const [includeMajor, setIncludeMajor] = React.useState(true);
+  const [includeMinor, setIncludeMinor] = React.useState(true);
 
   const onStart = () => {
-    setPrompt(getRandomTriadPrompt());
+    setPrompt(getRandomTriadPrompt(onlyNaturalNotes, includeMajor, includeMinor));
+  };
+
+  const onChangeOnlyNaturalNotes = () => {
+    setOnlyNaturalNotes((prevOnlyNaturalNotes) => !prevOnlyNaturalNotes);
+  };
+
+  const onChangeIncludeMajor = () => {
+    setIncludeMajor((prevIncludeMajor) => !prevIncludeMajor);
+  };
+
+  const onChangeIncludeMinor = () => {
+    setIncludeMinor((prevIncludeMinor) => !prevIncludeMinor);
   };
 
   return (
@@ -68,7 +94,36 @@ export default function PlayRandomTriad() {
       <div className="lg:grid grid-cols-2 text-start text-2xl">
         <div className="lg:border-r border-gray-300 lg:pr-8">
           <div className="bg-teal-50 dark:bg-teal-950 p-3 rounded mb-8 text-base">
-            This practice gives you a random triad, inversion, and string set.
+            <label className="block mb-2" htmlFor="only-natural-notes-checkbox">
+              <input
+                id="only-natural-notes-checkbox"
+                className="mr-1"
+                type="checkbox"
+                checked={onlyNaturalNotes}
+                onChange={onChangeOnlyNaturalNotes}
+              />
+              Natural notes only
+            </label>
+            <label className="block mb-2" htmlFor="include-major-checkbox">
+              <input
+                id="include-major-checkbox"
+                className="mr-1"
+                type="checkbox"
+                checked={includeMajor}
+                onChange={onChangeIncludeMajor}
+              />
+              Include major triads
+            </label>
+            <label className="block" htmlFor="include-minor-checkbox">
+              <input
+                id="include-minor-checkbox"
+                className="mr-1"
+                type="checkbox"
+                checked={includeMinor}
+                onChange={onChangeIncludeMinor}
+              />
+              Include minor triads
+            </label>
           </div>
           <div className="mb-4 text-pretty">
             Generate a random triad and play it on the specified strings.
