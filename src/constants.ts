@@ -4,11 +4,13 @@ import GetSeventhChordNotes from "./GetSeventhChordNotes";
 import GetTriadNotes from "./GetTriadNotes";
 import NameTheNote from "./NameTheNote";
 import NameTriadNotes from "./NameTriadNotes";
+import PlayRandomTriad from "./PlayRandomTriad";
 
 export enum PracticeComponentNames {
   NameTheNote = "Name the note",
   FindTheNote = "Find the note",
   NameTriadNotes = "Name triad notes",
+  PlayRandomTriad = "Play a random triad",
 }
 
 export enum HelperComponentNames {
@@ -21,6 +23,7 @@ export const PRACTICE_COMPONENTS = {
   [PracticeComponentNames.NameTheNote]: NameTheNote,
   [PracticeComponentNames.FindTheNote]: FindTheNote,
   [PracticeComponentNames.NameTriadNotes]: NameTriadNotes,
+  [PracticeComponentNames.PlayRandomTriad]: PlayRandomTriad,
 };
 
 export const HELPER_COMPONENTS = {
