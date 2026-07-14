@@ -32,7 +32,7 @@ function getRandomStringSet(): [string, string, string] {
 
 function getRandomTriadPrompt(): TriadPrompt {
   const sortedNotes = getSortedNotes();
-  const rootNote = getRandomItem(sortedNotes);
+  const rootNote = getRandomItem(sortedNotes).split("/")[0];
   const chordType = getRandomItem([ChordType.Major, ChordType.Minor]);
   const inversion = Math.floor(Math.random() * 3);
   const triadNotes = getChordTriad(rootNote, chordType);

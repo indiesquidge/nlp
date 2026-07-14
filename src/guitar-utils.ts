@@ -289,13 +289,14 @@ export function getSortedNotes(): string[] {
 
 function findChordRootIndex(chordRoot: string) {
   const notes = getNotes();
+  const normalizedChordRoot = simplifyNote(chordRoot);
   const noteIndex = notes.findIndex((note) => {
     const [sharp, flat] = note.split("/");
-    return sharp === chordRoot || flat === chordRoot;
+    return sharp === normalizedChordRoot || flat === normalizedChordRoot;
   });
 
   if (noteIndex === -1) {
-    throw new Error("Invalid chord root");
+    throw new Error(`Invalid chord root: ${chordRoot}`);
   }
 
   return noteIndex;
